@@ -1,0 +1,39 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { LoginForm } from '../components/auth/LoginForm';
+import { Logo } from '../components/ui/Logo';
+
+// Detectar si viene de un registro exitoso
+const url = new URL(Astro.request.url);
+const registered = url.searchParams.get('registered') === 'true';
+---
+
+<Layout title="Iniciar Sesión | Nawi">
+  <div class="auth-container">
+    <div class="auth-card">
+      <div class="logo-container">
+        <Logo size={40} />
+      </div>
+      
+      <div class="auth-header">
+        <h1>Bienvenido de nuevo</h1>
+        <p>Ingresa tus credenciales para acceder a tu cuenta</p>
+      </div>
+
+      {registered && (
+        <div class="alert alert-success" role="alert">
+          ¡Registro exitoso! Por favor, inicia sesión con tu cuenta.
+        </div>
+      )}
+
+      <LoginForm client:load />
+
+      <div class="auth-footer">
+        ¿No tienes una cuenta?{' '}
+        <a href="/register" class="auth-link">
+          Regístrate
+        </a>
+      </div>
+    </div>
+  </div>
+</Layout>

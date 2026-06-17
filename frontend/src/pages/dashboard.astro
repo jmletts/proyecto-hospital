@@ -1,0 +1,56 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Logo } from '../components/ui/Logo';
+
+// Leer el token de la cookie
+const token = Astro.cookies.get('token')?.value || '';
+let userEmail = 'Usuario';
+
+if (token) {
+  try {
+    const payloadBase64 = token.split('.')[1];
+    const payloadDecoded = Buffer.from(payloadBase64, 'base64').toString('utf-8');
+    const payload = JSON.parse(payloadDecoded);
+    userEmail = payload.correo || 'Usuario';
+  } catch (e) {
+    console.error('Error al decodificar el token JWT:', e);
+  }
+}
+---
+
+<Layout title="Dashboard | Nawi">
+  <div class="dashboard-container">
+    <nav class="navbar">
+      <div class="navbar-brand">
+        <Logo size={32} />
+      </div>
+      <div class="navbar-user">
+        <span class="user-badge">{userEmail}</span>
+        <button id="logoutBtn" class="btn btn-secondary btn-logout">
+          Cerrar sesión
+        </button>
+      </div>
+    </nav>
+
+    <main class="dashboard-content">
+      <div class="welcome-card">
+        <h1 class="welcome-title">Hola, {userEmail}</h1>
+        <p class="welcome-subtitle">
+          Has iniciado sesión correctamente. Este es tu panel de control protegido.
+        </p>
+      </div>
+    </main>
+  </div>
+</Layout>
+
+<script>
+  import { authService } from '../services/auth.service';
+
+  const logoutBtn = document.getElementById('logoutBtn');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+      authService.logout();
+      window.location.href = '/login';
+    });
+  }
+</script>

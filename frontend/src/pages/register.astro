@@ -1,0 +1,29 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { RegisterForm } from '../components/auth/RegisterForm';
+import { Logo } from '../components/ui/Logo';
+---
+
+<Layout title="Crear Cuenta | Nawi">
+  <div class="auth-container">
+    <div class="auth-card">
+      <div class="logo-container">
+        <Logo size={40} />
+      </div>
+      
+      <div class="auth-header">
+        <h1>Crea tu cuenta</h1>
+        <p>Regístrate para comenzar a gestionar tus citas y salud</p>
+      </div>
+
+      <RegisterForm client:load />
+
+      <div class="auth-footer">
+        ¿Ya tienes una cuenta?{' '}
+        <a href="/login" class="auth-link">
+          Inicia sesión
+        </a>
+      </div>
+    </div>
+  </div>
+</Layout>
