@@ -1,0 +1,27 @@
+---
+import AppLayout from '../layouts/AppLayout.astro';
+import { RolesList } from '../components/modules/roles/RolesList';
+
+// Guardar acceso para administrador
+const token = Astro.cookies.get('token')?.value || '';
+let userRol = '';
+
+if (token) {
+  try {
+    const payloadBase64 = token.split('.')[1];
+    const payloadDecoded = Buffer.from(payloadBase64, 'base64').toString('utf-8');
+    const payload = JSON.parse(payloadDecoded);
+    userRol = payload.rol || '';
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+if (userRol !== 'Admin') {
+  return Astro.redirect('/dashboard');
+}
+---
+
+<AppLayout title="Roles | Nawi">
+  <RolesList client:load />
+</AppLayout>

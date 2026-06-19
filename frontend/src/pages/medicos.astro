@@ -1,0 +1,8 @@
+---
+import AppLayout from '../layouts/AppLayout.astro';
+import { MedicosList } from '../components/modules/medicos/MedicosList';
+---
+
+<AppLayout title="Médicos | Nawi">
+  <MedicosList client:load />
+</AppLayout>

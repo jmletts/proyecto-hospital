@@ -1,0 +1,8 @@
+---
+import AppLayout from '../layouts/AppLayout.astro';
+import { CitasList } from '../components/modules/citas/CitasList';
+---
+
+<AppLayout title="Citas | Nawi">
+  <CitasList client:load />
+</AppLayout>

@@ -1,0 +1,8 @@
+---
+import AppLayout from '../layouts/AppLayout.astro';
+import { FacturacionList } from '../components/modules/facturacion/FacturacionList';
+---
+
+<AppLayout title="Facturación | Nawi">
+  <FacturacionList client:load />
+</AppLayout>

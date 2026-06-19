@@ -1,10 +1,10 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import { Logo } from '../components/ui/Logo';
+import AppLayout from '../layouts/AppLayout.astro';
 
-// Leer el token de la cookie
+// Leer el token de la cookie para decodificación SSR
 const token = Astro.cookies.get('token')?.value || '';
 let userEmail = 'Usuario';
+let userRol = '';
 
 if (token) {
   try {
@@ -12,45 +12,90 @@ if (token) {
     const payloadDecoded = Buffer.from(payloadBase64, 'base64').toString('utf-8');
     const payload = JSON.parse(payloadDecoded);
     userEmail = payload.correo || 'Usuario';
+    userRol = payload.rol || '';
   } catch (e) {
     console.error('Error al decodificar el token JWT:', e);
   }
 }
 ---
 
-<Layout title="Dashboard | Nawi">
-  <div class="dashboard-container">
-    <nav class="navbar">
-      <div class="navbar-brand">
-        <Logo size={32} />
-      </div>
-      <div class="navbar-user">
-        <span class="user-badge">{userEmail}</span>
-        <button id="logoutBtn" class="btn btn-secondary btn-logout">
-          Cerrar sesión
-        </button>
-      </div>
-    </nav>
-
-    <main class="dashboard-content">
-      <div class="welcome-card">
-        <h1 class="welcome-title">Hola, {userEmail}</h1>
-        <p class="welcome-subtitle">
-          Has iniciado sesión correctamente. Este es tu panel de control protegido.
-        </p>
-      </div>
-    </main>
+<AppLayout title="Dashboard | Nawi">
+  <div class="dashboard-header-bar">
+    <div>
+      <h1 class="page-title">Panel de Control</h1>
+      <p class="page-subtitle">Bienvenido al sistema médico Nawi.</p>
+    </div>
   </div>
-</Layout>
 
-<script>
-  import { authService } from '../services/auth.service';
+  <div class="welcome-banner">
+    <div class="welcome-banner-text">
+      <h2>¡Hola de nuevo, {userEmail}! 👋</h2>
+      <p>Has iniciado sesión con el rol de <strong>{userRol}</strong>. Desde aquí puedes gestionar todo el flujo médico y administrativo.</p>
+    </div>
+  </div>
 
-  const logoutBtn = document.getElementById('logoutBtn');
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', () => {
-      authService.logout();
-      window.location.href = '/login';
-    });
-  }
-</script>
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon" style="background-color: rgba(12, 60, 96, 0.1); color: var(--accent-color);">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" style={{ width: '24px', height: '24px' }}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+        </svg>
+      </div>
+      <div class="stat-info">
+        <h3>Pacientes</h3>
+        <p class="stat-desc">Registro y expedientes médicos</p>
+      </div>
+      <a href="/pacientes" class="stat-link">Gestionar &rarr;</a>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon" style="background-color: rgba(21, 193, 53, 0.1); color: #15c135;">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" style={{ width: '24px', height: '24px' }}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+        </svg>
+      </div>
+      <div class="stat-info">
+        <h3>Citas</h3>
+        <p class="stat-desc">Calendario y estados de consulta</p>
+      </div>
+      <a href="/citas" class="stat-link">Gestionar &rarr;</a>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon" style="background-color: rgba(193, 53, 21, 0.1); color: #c13515;">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" style={{ width: '24px', height: '24px' }}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75" />
+        </svg>
+      </div>
+      <div class="stat-info">
+        <h3>Facturación</h3>
+        <p class="stat-desc">Monto total y estado de pagos</p>
+      </div>
+      <a href="/facturacion" class="stat-link">Gestionar &rarr;</a>
+    </div>
+  </div>
+
+  <div class="quick-actions-section">
+    <h3 class="section-title">Accesos Rápidos</h3>
+    <div class="quick-actions-grid">
+      <a href="/historias" class="action-card">
+        <h4>Historias Clínicas</h4>
+        <p>Ver y registrar diagnósticos oftálmicos.</p>
+      </a>
+      <a href="/recetas" class="action-card">
+        <h4>Recetas de Lentes</h4>
+        <p>Añadir medidas de esfera, cilindro y eje.</p>
+      </a>
+      <a href="/servicios" class="action-card">
+        <h4>Servicios</h4>
+        <p>Catálogo de consultas y cirugías.</p>
+      </a>
+      {userRol === 'Admin' && (
+        <a href="/usuarios" class="action-card">
+          <h4>Usuarios y Accesos</h4>
+          <p>Configurar credenciales del personal médico.</p>
+        </a>
+      )}
+    </div>
+  </div>
+</AppLayout>

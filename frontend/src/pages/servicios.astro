@@ -1,0 +1,8 @@
+---
+import AppLayout from '../layouts/AppLayout.astro';
+import { ServiciosList } from '../components/modules/servicios/ServiciosList';
+---
+
+<AppLayout title="Servicios | Nawi">
+  <ServiciosList client:load />
+</AppLayout>

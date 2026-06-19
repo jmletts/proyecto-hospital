@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:5000';
+const API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:5000';
 
 export interface User {
   id_usuario: number;
@@ -26,7 +26,8 @@ export const authService = {
       throw new Error(errorData.message || 'Error al registrar el usuario.');
     }
 
-    return response.json();
+    const resJson = await response.json();
+    return resJson.data || resJson;
   },
 
   async login(correo: string, password: string): Promise<LoginResponse> {
@@ -43,7 +44,8 @@ export const authService = {
       throw new Error(errorData.message || 'Credenciales inválidas.');
     }
 
-    const data: LoginResponse = await response.json();
+    const resJson = await response.json();
+    const data: LoginResponse = resJson.data || resJson;
     
     // Setea el token en las cookies del lado del cliente para que Astro SSR y el middleware puedan leerlo
     if (typeof window !== 'undefined') {
