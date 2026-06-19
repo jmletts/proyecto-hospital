@@ -16,6 +16,7 @@ async function bootstrap() {
     origin: [
       'http://localhost:3000',
       'http://localhost:4321',
+      'https://proyecto-hospital-1-mt97.onrender.com',
       process.env.CORS_ORIGIN
     ].filter(Boolean),
     credentials: true,
