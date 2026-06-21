@@ -12,6 +12,7 @@ import { CitasModule } from './citas/citas.module';
 import { HistoriasModule } from './historias/historias.module';
 import { RecetasModule } from './recetas/recetas.module';
 import { FacturacionModule } from './facturacion/facturacion.module';
+import { ChatbotModule } from './chatbot/chatbot.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
@@ -32,6 +33,7 @@ import { LoggerMiddleware } from './common/middleware/logger.middleware';
     HistoriasModule,
     RecetasModule,
     FacturacionModule,
+    ChatbotModule,
   ],
   providers: [
     {

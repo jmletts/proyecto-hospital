@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import { Sidebar } from '../components/ui/Sidebar';
+import { ChatbotWidget } from '../components/ui/ChatbotWidget';
 
 interface Props {
   title?: string;
@@ -26,5 +27,6 @@ const { title = 'Nawi' } = Astro.props;
         <slot />
       </main>
     </div>
+    <ChatbotWidget client:load />
   </body>
 </html>
