@@ -6,6 +6,9 @@ export class UpdateUsuarioDto {
   correo?: string;
 
   @IsOptional()
+  nombre?: string;
+
+  @IsOptional()
   @MinLength(6, { message: 'La contraseña debe tener al menos 6 caracteres' })
   password?: string;
 

@@ -13,7 +13,7 @@ export class AuthService {
   ) {}
 
   async register(registerDto: RegisterDto) {
-    const { correo, password, id_rol } = registerDto;
+    const { correo, password, nombre, id_rol } = registerDto;
 
     const existing = await this.prisma.usuario.findUnique({
       where: { correo },
@@ -35,6 +35,7 @@ export class AuthService {
     const user = await this.prisma.usuario.create({
       data: {
         correo,
+        nombre,
         password_hash: hashedPassword,
         id_rol: rol.id_rol,
         estado: true,

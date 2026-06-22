@@ -11,6 +11,7 @@ interface Role {
 
 interface Usuario {
   id_usuario: number;
+  nombre: string;
   id_rol: number;
   correo: string;
   estado: boolean;
@@ -22,10 +23,12 @@ export const UsuariosList: React.FC = () => {
   const [roles, setRoles] = useState<Role[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [currentUser, setCurrentUser] = useState<any>(null);
 
   // Form State
   const [modalOpen, setModalOpen] = useState(false);
   const [editingUsuario, setEditingUsuario] = useState<Usuario | null>(null);
+  const [nombre, setNombre] = useState('');
   const [correo, setCorreo] = useState('');
   const [password, setPassword] = useState('');
   const [idRol, setIdRol] = useState<number | ''>('');
@@ -56,10 +59,19 @@ export const UsuariosList: React.FC = () => {
 
   useEffect(() => {
     fetchData();
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      try {
+        setCurrentUser(JSON.parse(userStr));
+      } catch (e) {
+        console.error(e);
+      }
+    }
   }, []);
 
   const handleOpenCreate = () => {
     setEditingUsuario(null);
+    setNombre('');
     setCorreo('');
     setPassword('');
     setIdRol(roles.length > 0 ? roles[0].id_rol : '');
@@ -69,6 +81,7 @@ export const UsuariosList: React.FC = () => {
 
   const handleOpenEdit = (user: Usuario) => {
     setEditingUsuario(user);
+    setNombre(user.nombre || '');
     setCorreo(user.correo);
     setPassword(''); // No mostrar la contraseña por seguridad
     setIdRol(user.id_rol);
@@ -83,6 +96,7 @@ export const UsuariosList: React.FC = () => {
     setSubmitting(true);
     try {
       const payload: any = {
+        nombre,
         correo,
         id_rol: Number(idRol),
         estado,
@@ -130,6 +144,7 @@ export const UsuariosList: React.FC = () => {
 
   const columns: Column<Usuario>[] = [
     { key: 'id_usuario', label: 'ID' },
+    { key: 'nombre', label: 'Nombre' },
     { key: 'correo', label: 'Correo' },
     { 
       key: 'id_rol', 
@@ -154,12 +169,14 @@ export const UsuariosList: React.FC = () => {
           <h1 className="module-title">Usuarios</h1>
           <p className="module-subtitle">Cuentas y credenciales de acceso para el personal.</p>
         </div>
-        <button className="btn btn-primary btn-add" onClick={handleOpenCreate}>
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2.5" stroke="currentColor" style={{ width: '16px', height: '16px', marginRight: '8px' }}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-          </svg>
-          Crear Usuario
-        </button>
+        {currentUser?.rol === 'Admin' && (
+          <button className="btn btn-primary btn-add" onClick={handleOpenCreate}>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2.5" stroke="currentColor" style={{ width: '16px', height: '16px', marginRight: '8px' }}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+            Crear Usuario
+          </button>
+        )}
       </div>
 
       {error && <div className="alert alert-danger">{error}</div>}
@@ -168,8 +185,8 @@ export const UsuariosList: React.FC = () => {
         columns={columns}
         data={usuarios}
         loading={loading}
-        onEdit={handleOpenEdit}
-        onDelete={handleOpenDelete}
+        onEdit={currentUser?.rol === 'Admin' ? handleOpenEdit : undefined}
+        onDelete={currentUser?.rol === 'Admin' ? handleOpenDelete : undefined}
       />
 
       <Modal
@@ -179,7 +196,20 @@ export const UsuariosList: React.FC = () => {
       >
         <form onSubmit={handleSave} className="modal-form">
           <div className="form-group">
-            <label className="form-label" htmlFor="correo">Nombre de usuario / Correo</label>
+            <label className="form-label" htmlFor="nombre">Nombre</label>
+            <input
+              id="nombre"
+              type="text"
+              className="form-input"
+              value={nombre}
+              onChange={(e) => setNombre(e.target.value)}
+              required
+              placeholder="Juan Pérez"
+            />
+          </div>
+
+          <div className="form-group">
+            <label className="form-label" htmlFor="correo">Correo</label>
             <input
               id="correo"
               type="email"

@@ -30,6 +30,7 @@ export class UsuariosService {
       data: {
         correo: createUsuarioDto.correo,
         password_hash: hashedPassword,
+        nombre: createUsuarioDto.nombre,
         id_rol: createUsuarioDto.id_rol,
         estado: createUsuarioDto.estado ?? true,
       },
@@ -46,6 +47,7 @@ export class UsuariosService {
     return this.prisma.usuario.findMany({
       select: {
         id_usuario: true,
+        nombre: true,
         correo: true,
         id_rol: true,
         estado: true,
@@ -87,6 +89,10 @@ export class UsuariosService {
         throw new ConflictException('El correo electrónico ya está registrado por otro usuario.');
       }
       updateData.correo = updateUsuarioDto.correo;
+    }
+
+    if (updateUsuarioDto.nombre) {
+      updateData.nombre = updateUsuarioDto.nombre;
     }
 
     if (updateUsuarioDto.password) {
