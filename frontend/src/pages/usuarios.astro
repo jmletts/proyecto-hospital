@@ -2,13 +2,9 @@
 import AppLayout from '../layouts/AppLayout.astro';
 import { UsuariosList } from '../components/modules/usuarios/UsuariosList';
 
----
-import AppLayout from '../layouts/AppLayout.astro';
-import { UsuariosList } from '../components/modules/usuarios/UsuariosList';
-
 // Permitir acceso a todos; el componente UsuariosList ocultará los botones para los que no son admin
 ---
 
 <AppLayout title="Usuarios | Nawi">
-  <UsuariosList client:load />
+  <UsuariosList client:only="react" />
 </AppLayout>
