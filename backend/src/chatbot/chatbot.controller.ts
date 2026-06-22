@@ -13,10 +13,7 @@ export class ChatbotController {
       chatDto.history
     );
     return {
-      success: true,
-      data: {
-        respuesta: response,
-      },
+      respuesta: response,
     };
   }
 }
