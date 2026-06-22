@@ -46,7 +46,7 @@ export const authService = {
 
     const resJson = await response.json();
     const data: LoginResponse = resJson.data || resJson;
-    
+
     // Setea el token en las cookies del lado del cliente para que Astro SSR y el middleware puedan leerlo
     if (typeof window !== 'undefined') {
       document.cookie = `token=${data.access_token}; path=/; max-age=${8 * 60 * 60}; SameSite=Strict`;

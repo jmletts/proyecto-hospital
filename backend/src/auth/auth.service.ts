@@ -13,7 +13,17 @@ export class AuthService {
   ) {}
 
   async register(registerDto: RegisterDto) {
-    const { correo, password } = registerDto;
+    const { correo, password, registrationToken } = registerDto;
+
+    // Verify registration token
+    try {
+      const payload = this.jwtService.verify(registrationToken);
+      if (payload.purpose !== 'registration') {
+        throw new UnauthorizedException('Token de registro no válido.');
+      }
+    } catch (e) {
+      throw new UnauthorizedException('Token de registro expirado o no válido.');
+    }
 
     const existing = await this.prisma.usuario.findUnique({
       where: { correo },
@@ -50,6 +60,37 @@ export class AuthService {
 
     const { password_hash, ...result } = user;
     return result;
+  }
+
+  async getRegisterPin() {
+    const config = await this.prisma.configuracion.findUnique({
+      where: { clave: 'register_pin' },
+    });
+    return config?.valor || '1234';
+  }
+
+  async updateRegisterPin(newPin: string) {
+    if (!newPin || newPin.trim().length < 4) {
+      throw new BadRequestException('El PIN debe tener al menos 4 caracteres.');
+    }
+    await this.prisma.configuracion.upsert({
+      where: { clave: 'register_pin' },
+      update: { valor: newPin },
+      create: { clave: 'register_pin', valor: newPin },
+    });
+    return { success: true, message: 'PIN actualizado correctamente.' };
+  }
+
+  async verifyRegisterPin(pin: string) {
+    const activePin = await this.getRegisterPin();
+    if (pin !== activePin) {
+      throw new UnauthorizedException('PIN de registro incorrecto.');
+    }
+    const token = this.jwtService.sign(
+      { purpose: 'registration' },
+      { expiresIn: '15m' }
+    );
+    return { registrationToken: token };
   }
 
   async login(loginDto: LoginDto) {

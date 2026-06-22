@@ -20,7 +20,15 @@ async function main() {
       create: { nombre: rol.nombre, descripcion: rol.descripcion },
     });
   }
-  console.log('Roles seeded successfully. No test users were created.');
+
+  // Seed default registration PIN
+  await prisma.configuracion.upsert({
+    where: { clave: 'register_pin' },
+    update: {},
+    create: { clave: 'register_pin', valor: '1234' },
+  });
+
+  console.log('Roles and configuration seeded successfully. No test users were created.');
 }
 
 main()

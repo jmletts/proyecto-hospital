@@ -1,10 +1,10 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
-}
-
-generator client {
-  provider = "prisma-client-js"
 }
 
 model Rol {
@@ -23,37 +23,38 @@ model Usuario {
   password_hash  String    @db.VarChar(255)
   estado         Boolean   @default(true)
   fecha_creacion DateTime  @default(now()) @db.DateTime(0)
-  rol            Rol       @relation(fields: [id_rol], references: [id_rol], onDelete: Restrict)
-  paciente       Paciente?
   medico         Medico?
+  paciente       Paciente?
+  rol            Rol       @relation(fields: [id_rol], references: [id_rol])
 
+  @@index([id_rol], map: "usuarios_id_rol_fkey")
   @@map("usuarios")
 }
 
 model Paciente {
-  id_paciente      Int        @id @default(autoincrement())
-  id_usuario       Int?       @unique
-  dni              String     @unique @db.VarChar(15)
-  nombres          String     @db.VarChar(100)
-  apellidos        String     @db.VarChar(100)
-  telefono         String?    @db.VarChar(20)
-  fecha_nacimiento DateTime?  @db.Date
-  usuario          Usuario?   @relation(fields: [id_usuario], references: [id_usuario], onDelete: SetNull)
+  id_paciente      Int               @id @default(autoincrement())
+  id_usuario       Int?              @unique
+  dni              String            @unique @db.VarChar(15)
+  nombres          String            @db.VarChar(100)
+  apellidos        String            @db.VarChar(100)
+  telefono         String?           @db.VarChar(20)
+  fecha_nacimiento DateTime?         @db.Date
   citas            Cita[]
   historias        HistoriaClinica[]
+  usuario          Usuario?          @relation(fields: [id_usuario], references: [id_usuario])
 
   @@map("pacientes")
 }
 
 model Medico {
-  id_medico    Int      @id @default(autoincrement())
-  id_usuario   Int      @unique
-  nombres      String   @db.VarChar(100)
-  apellidos    String   @db.VarChar(100)
-  cmp          String   @unique @db.VarChar(20)
-  especialidad String   @default("Oftalmología General") @db.VarChar(100)
-  usuario      Usuario  @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade)
+  id_medico    Int     @id @default(autoincrement())
+  id_usuario   Int     @unique
+  nombres      String  @db.VarChar(100)
+  apellidos    String  @db.VarChar(100)
+  cmp          String  @unique @db.VarChar(20)
+  especialidad String  @default("Oftalmología General") @db.VarChar(100)
   citas        Cita[]
+  usuario      Usuario @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade)
 
   @@map("medicos")
 }
@@ -69,52 +70,56 @@ model Servicio {
 }
 
 model Cita {
-  id_cita         Int      @id @default(autoincrement())
+  id_cita         Int              @id @default(autoincrement())
   id_paciente     Int
   id_medico       Int
   id_servicio     Int
-  fecha_hora      DateTime @db.DateTime(0)
-  estado          String   @default("Pendiente") @db.VarChar(20)
+  fecha_hora      DateTime         @db.DateTime(0)
+  estado          String           @default("Pendiente") @db.VarChar(20)
   motivo_consulta String?
-  paciente        Paciente @relation(fields: [id_paciente], references: [id_paciente], onDelete: Cascade)
-  medico          Medico   @relation(fields: [id_medico], references: [id_medico], onDelete: Restrict)
-  servicio        Servicio @relation(fields: [id_servicio], references: [id_servicio], onDelete: Restrict)
-  historia        HistoriaClinica?
+  medico          Medico           @relation(fields: [id_medico], references: [id_medico])
+  paciente        Paciente         @relation(fields: [id_paciente], references: [id_paciente], onDelete: Cascade)
+  servicio        Servicio         @relation(fields: [id_servicio], references: [id_servicio])
   factura         Facturacion?
+  historia        HistoriaClinica?
 
+  @@index([id_medico], map: "citas_id_medico_fkey")
+  @@index([id_paciente], map: "citas_id_paciente_fkey")
+  @@index([id_servicio], map: "citas_id_servicio_fkey")
   @@map("citas")
 }
 
 model HistoriaClinica {
-  id_historia            Int      @id @default(autoincrement())
+  id_historia            Int           @id @default(autoincrement())
   id_paciente            Int
-  id_cita                Int      @unique
-  fecha_registro         DateTime @default(now()) @db.DateTime(0)
-  agudeza_visual_od      String?  @db.VarChar(20)
-  agudeza_visual_oi      String?  @db.VarChar(20)
-  presion_intraocular_od String?  @db.VarChar(20)
-  presion_intraocular_oi String?  @db.VarChar(20)
+  id_cita                Int           @unique
+  fecha_registro         DateTime      @default(now()) @db.DateTime(0)
+  agudeza_visual_od      String?       @db.VarChar(20)
+  agudeza_visual_oi      String?       @db.VarChar(20)
+  presion_intraocular_od String?       @db.VarChar(20)
+  presion_intraocular_oi String?       @db.VarChar(20)
   diagnostico            String?
   observaciones          String?
-  paciente               Paciente @relation(fields: [id_paciente], references: [id_paciente], onDelete: Cascade)
-  cita                   Cita     @relation(fields: [id_cita], references: [id_cita], onDelete: Cascade)
+  cita                   Cita          @relation(fields: [id_cita], references: [id_cita], onDelete: Cascade)
+  paciente               Paciente      @relation(fields: [id_paciente], references: [id_paciente], onDelete: Cascade)
   receta                 RecetaLentes?
 
+  @@index([id_paciente], map: "historias_clinicas_id_paciente_fkey")
   @@map("historias_clinicas")
 }
 
 model RecetaLentes {
-  id_receta         Int      @id @default(autoincrement())
-  id_historia       Int      @unique
-  od_esfera         Decimal? @db.Decimal(4, 2)
-  od_cilindro       Decimal? @db.Decimal(4, 2)
+  id_receta         Int             @id @default(autoincrement())
+  id_historia       Int             @unique
+  od_esfera         Decimal?        @db.Decimal(4, 2)
+  od_cilindro       Decimal?        @db.Decimal(4, 2)
   od_eje            Int?
-  oi_esfera         Decimal? @db.Decimal(4, 2)
-  oi_cilindro       Decimal? @db.Decimal(4, 2)
+  oi_esfera         Decimal?        @db.Decimal(4, 2)
+  oi_cilindro       Decimal?        @db.Decimal(4, 2)
   oi_eje            Int?
-  adicion           Decimal? @db.Decimal(4, 2)
-  distancia_pupilar Decimal? @db.Decimal(5, 2)
-  fecha_emision     DateTime @default(now()) @db.DateTime(0)
+  adicion           Decimal?        @db.Decimal(4, 2)
+  distancia_pupilar Decimal?        @db.Decimal(5, 2)
+  fecha_emision     DateTime        @default(now()) @db.DateTime(0)
   historia          HistoriaClinica @relation(fields: [id_historia], references: [id_historia], onDelete: Cascade)
 
   @@map("recetas_lentes")
@@ -127,7 +132,14 @@ model Facturacion {
   fecha_emision DateTime @default(now()) @db.DateTime(0)
   metodo_pago   String?  @db.VarChar(50)
   estado_pago   String   @default("Pendiente") @db.VarChar(20)
-  cita          Cita     @relation(fields: [id_cita], references: [id_cita], onDelete: Restrict)
+  cita          Cita     @relation(fields: [id_cita], references: [id_cita])
 
   @@map("facturacion")
+}
+
+model Configuracion {
+  clave String @id @db.VarChar(50)
+  valor String @db.VarChar(255)
+
+  @@map("configuraciones")
 }
