@@ -3,36 +3,21 @@ import { Response } from 'express';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
-import { PinDto } from './dto/pin.dto';
 import { Public } from '../common/decorators/public.decorator';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
+import { Roles } from '../common/decorators/roles.decorator';
 
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) { }
 
-  @Public()
+  @Roles('Admin')
   @Post('register')
   async register(@Body() registerDto: RegisterDto) {
     return this.authService.register(registerDto);
   }
 
-  @Public()
-  @Post('verify-pin')
-  async verifyPin(@Body() pinDto: PinDto) {
-    return this.authService.verifyRegisterPin(pinDto.pin);
-  }
 
-  @Get('register-pin')
-  async getRegisterPin() {
-    const pin = await this.authService.getRegisterPin();
-    return { pin };
-  }
-
-  @Patch('register-pin')
-  async updateRegisterPin(@Body() pinDto: PinDto) {
-    return this.authService.updateRegisterPin(pinDto.pin);
-  }
 
   @Public()
   @Post('login')

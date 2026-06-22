@@ -13,17 +13,7 @@ export class AuthService {
   ) {}
 
   async register(registerDto: RegisterDto) {
-    const { correo, password, registrationToken } = registerDto;
-
-    // Verify registration token
-    try {
-      const payload = this.jwtService.verify(registrationToken);
-      if (payload.purpose !== 'registration') {
-        throw new UnauthorizedException('Token de registro no válido.');
-      }
-    } catch (e) {
-      throw new UnauthorizedException('Token de registro expirado o no válido.');
-    }
+    const { correo, password, id_rol } = registerDto;
 
     const existing = await this.prisma.usuario.findUnique({
       where: { correo },
@@ -32,16 +22,12 @@ export class AuthService {
       throw new ConflictException('El correo electrónico ya está registrado.');
     }
 
-    let rol = await this.prisma.rol.findUnique({
-      where: { nombre: 'Paciente' },
+    const rol = await this.prisma.rol.findUnique({
+      where: { id_rol },
     });
 
     if (!rol) {
-      rol = await this.prisma.rol.findFirst();
-    }
-
-    if (!rol) {
-      throw new BadRequestException('No hay roles registrados en el sistema.');
+      throw new BadRequestException('El rol especificado no existe.');
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -62,36 +48,7 @@ export class AuthService {
     return result;
   }
 
-  async getRegisterPin() {
-    const config = await this.prisma.configuracion.findUnique({
-      where: { clave: 'register_pin' },
-    });
-    return config?.valor || '1234';
-  }
 
-  async updateRegisterPin(newPin: string) {
-    if (!newPin || newPin.trim().length < 4) {
-      throw new BadRequestException('El PIN debe tener al menos 4 caracteres.');
-    }
-    await this.prisma.configuracion.upsert({
-      where: { clave: 'register_pin' },
-      update: { valor: newPin },
-      create: { clave: 'register_pin', valor: newPin },
-    });
-    return { success: true, message: 'PIN actualizado correctamente.' };
-  }
-
-  async verifyRegisterPin(pin: string) {
-    const activePin = await this.getRegisterPin();
-    if (pin !== activePin) {
-      throw new UnauthorizedException('PIN de registro incorrecto.');
-    }
-    const token = this.jwtService.sign(
-      { purpose: 'registration' },
-      { expiresIn: '15m' }
-    );
-    return { registrationToken: token };
-  }
 
   async login(loginDto: LoginDto) {
     const { correo, password } = loginDto;

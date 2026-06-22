@@ -9,7 +9,6 @@ export class RegisterDto {
   @MinLength(6, { message: 'La contraseña debe tener al menos 6 caracteres' })
   password: string;
 
-  @IsNotEmpty({ message: 'El token de registro es requerido' })
-  @IsString()
-  registrationToken: string;
+  @IsNotEmpty({ message: 'El rol es requerido' })
+  id_rol: number;
 }

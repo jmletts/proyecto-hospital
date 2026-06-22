@@ -137,9 +137,3 @@ model Facturacion {
   @@map("facturacion")
 }
 
-model Configuracion {
-  clave String @id @db.VarChar(50)
-  valor String @db.VarChar(255)
-
-  @@map("configuraciones")
-}
