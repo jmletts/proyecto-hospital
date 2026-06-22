@@ -9,25 +9,25 @@ export class CitasController {
   constructor(private readonly citasService: CitasService) {}
 
   @Post()
-  @Roles('Admin', 'Recepción')
+  @Roles('Admin', 'Operador')
   create(@Body() createCitaDto: CreateCitaDto) {
     return this.citasService.create(createCitaDto);
   }
 
   @Get()
-  @Roles('Admin', 'Médico', 'Recepción')
+  @Roles('Admin', 'Médico', 'Operador', 'Paciente')
   findAll() {
     return this.citasService.findAll();
   }
 
   @Get(':id')
-  @Roles('Admin', 'Médico', 'Recepción')
+  @Roles('Admin', 'Médico', 'Operador', 'Paciente')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.citasService.findOne(id);
   }
 
   @Patch(':id')
-  @Roles('Admin', 'Médico', 'Recepción')
+  @Roles('Admin', 'Médico', 'Operador')
   update(@Param('id', ParseIntPipe) id: number, @Body() updateCitaDto: UpdateCitaDto) {
     return this.citasService.update(id, updateCitaDto);
   }

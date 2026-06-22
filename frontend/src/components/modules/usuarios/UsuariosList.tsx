@@ -35,11 +35,7 @@ export const UsuariosList: React.FC = () => {
   const [estado, setEstado] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
-  // Role Form State
-  const [roleModalOpen, setRoleModalOpen] = useState(false);
-  const [roleNombre, setRoleNombre] = useState('');
-  const [roleDescripcion, setRoleDescripcion] = useState('');
-  const [roleSubmitting, setRoleSubmitting] = useState(false);
+
 
   // Delete State
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -129,26 +125,6 @@ export const UsuariosList: React.FC = () => {
     }
   };
 
-  const handleSaveRole = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!roleNombre) return alert('Por favor, ingrese el nombre del rol.');
-
-    setRoleSubmitting(true);
-    try {
-      const payload = {
-        nombre: roleNombre,
-        descripcion: roleDescripcion || null,
-      };
-      await apiService.create('roles', payload);
-      setRoleModalOpen(false);
-      fetchData();
-    } catch (err: any) {
-      alert(err.message || 'Error al guardar el rol.');
-    } finally {
-      setRoleSubmitting(false);
-    }
-  };
-
   const handleOpenDelete = (user: Usuario) => {
     setUsuarioToDelete(user);
     setDeleteDialogOpen(true);
@@ -196,24 +172,12 @@ export const UsuariosList: React.FC = () => {
           <p className="module-subtitle">Cuentas y credenciales de acceso para el personal.</p>
         </div>
         {currentUser?.rol === 'Admin' && (
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <button className="btn btn-secondary btn-add" onClick={() => {
-              setRoleNombre('');
-              setRoleDescripcion('');
-              setRoleModalOpen(true);
-            }}>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2.5" stroke="currentColor" style={{ width: '16px', height: '16px', marginRight: '8px' }}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-              </svg>
-              Crear Rol
-            </button>
-            <button className="btn btn-primary btn-add" onClick={handleOpenCreate}>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2.5" stroke="currentColor" style={{ width: '16px', height: '16px', marginRight: '8px' }}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-              </svg>
-              Crear Usuario
-            </button>
-          </div>
+          <button className="btn btn-primary btn-add" onClick={handleOpenCreate}>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2.5" stroke="currentColor" style={{ width: '16px', height: '16px', marginRight: '8px' }}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+            Crear Usuario
+          </button>
         )}
       </div>
 
@@ -311,46 +275,6 @@ export const UsuariosList: React.FC = () => {
             </button>
             <button type="submit" className="btn btn-primary" disabled={submitting}>
               {submitting ? 'Guardando...' : 'Guardar'}
-            </button>
-          </div>
-        </form>
-      </Modal>
-
-      <Modal
-        isOpen={roleModalOpen}
-        onClose={() => setRoleModalOpen(false)}
-        title="Crear Nuevo Rol"
-      >
-        <form onSubmit={handleSaveRole} className="modal-form">
-          <div className="form-group">
-            <label className="form-label" htmlFor="roleNombre">Nombre del Rol</label>
-            <input
-              id="roleNombre"
-              type="text"
-              className="form-input"
-              value={roleNombre}
-              onChange={(e) => setRoleNombre(e.target.value)}
-              required
-              placeholder="Ej: Auditor"
-            />
-          </div>
-          <div className="form-group">
-            <label className="form-label" htmlFor="roleDescripcion">Descripción (Opcional)</label>
-            <textarea
-              id="roleDescripcion"
-              className="form-input"
-              value={roleDescripcion}
-              onChange={(e) => setRoleDescripcion(e.target.value)}
-              placeholder="Descripción de los permisos del rol"
-              rows={3}
-            />
-          </div>
-          <div className="form-actions-modal">
-            <button type="button" className="btn btn-secondary" onClick={() => setRoleModalOpen(false)}>
-              Cancelar
-            </button>
-            <button type="submit" className="btn btn-primary" disabled={roleSubmitting}>
-              {roleSubmitting ? 'Guardando...' : 'Guardar'}
             </button>
           </div>
         </form>

@@ -15,13 +15,13 @@ export class RecetasController {
   }
 
   @Get()
-  @Roles('Admin', 'Médico', 'Recepción')
+  @Roles('Admin', 'Médico', 'Operador')
   findAll() {
     return this.recetasService.findAll();
   }
 
   @Get(':id')
-  @Roles('Admin', 'Médico', 'Recepción')
+  @Roles('Admin', 'Médico', 'Operador')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.recetasService.findOne(id);
   }

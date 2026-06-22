@@ -9,25 +9,25 @@ export class PacientesController {
   constructor(private readonly pacientesService: PacientesService) {}
 
   @Post()
-  @Roles('Admin', 'Recepción')
+  @Roles('Admin', 'Operador', 'Médico')
   create(@Body() createPacienteDto: CreatePacienteDto) {
     return this.pacientesService.create(createPacienteDto);
   }
 
   @Get()
-  @Roles('Admin', 'Médico', 'Recepción')
+  @Roles('Admin', 'Médico', 'Operador')
   findAll() {
     return this.pacientesService.findAll();
   }
 
   @Get(':id')
-  @Roles('Admin', 'Médico', 'Recepción')
+  @Roles('Admin', 'Médico', 'Operador')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.pacientesService.findOne(id);
   }
 
   @Patch(':id')
-  @Roles('Admin', 'Recepción')
+  @Roles('Admin', 'Operador', 'Médico')
   update(@Param('id', ParseIntPipe) id: number, @Body() updatePacienteDto: UpdatePacienteDto) {
     return this.pacientesService.update(id, updatePacienteDto);
   }

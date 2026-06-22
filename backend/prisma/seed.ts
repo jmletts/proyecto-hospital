@@ -9,7 +9,7 @@ async function main() {
   const roles = [
     { nombre: 'Admin', descripcion: 'Administrador del sistema' },
     { nombre: 'Médico', descripcion: 'Personal médico (Oftalmólogos)' },
-    { nombre: 'Recepción', descripcion: 'Personal de recepción y caja' },
+    { nombre: 'Operador', descripcion: 'Personal de recepción, caja y operaciones' },
     { nombre: 'Paciente', descripcion: 'Pacientes de la clínica' },
   ];
 

@@ -15,13 +15,13 @@ export class HistoriasController {
   }
 
   @Get()
-  @Roles('Admin', 'Médico', 'Recepción')
+  @Roles('Admin', 'Médico', 'Operador', 'Paciente')
   findAll() {
     return this.historiasService.findAll();
   }
 
   @Get(':id')
-  @Roles('Admin', 'Médico', 'Recepción')
+  @Roles('Admin', 'Médico', 'Operador', 'Paciente')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.historiasService.findOne(id);
   }

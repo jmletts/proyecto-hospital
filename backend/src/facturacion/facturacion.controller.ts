@@ -9,25 +9,25 @@ export class FacturacionController {
   constructor(private readonly facturacionService: FacturacionService) {}
 
   @Post()
-  @Roles('Admin', 'Recepción')
+  @Roles('Admin', 'Operador')
   create(@Body() createFacturaDto: CreateFacturaDto) {
     return this.facturacionService.create(createFacturaDto);
   }
 
   @Get()
-  @Roles('Admin', 'Recepción')
+  @Roles('Admin', 'Operador')
   findAll() {
     return this.facturacionService.findAll();
   }
 
   @Get(':id')
-  @Roles('Admin', 'Recepción')
+  @Roles('Admin', 'Operador')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.facturacionService.findOne(id);
   }
 
   @Patch(':id')
-  @Roles('Admin', 'Recepción')
+  @Roles('Admin', 'Operador')
   update(@Param('id', ParseIntPipe) id: number, @Body() updateFacturaDto: UpdateFacturaDto) {
     return this.facturacionService.update(id, updateFacturaDto);
   }

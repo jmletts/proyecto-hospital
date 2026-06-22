@@ -7,16 +7,6 @@ import { UpdateRoleDto } from './dto/update-role.dto';
 export class RolesService {
   constructor(private prisma: PrismaService) {}
 
-  async create(createRoleDto: CreateRoleDto) {
-    const existing = await this.prisma.rol.findUnique({
-      where: { nombre: createRoleDto.nombre },
-    });
-    if (existing) {
-      throw new ConflictException('El nombre del rol ya existe.');
-    }
-    return this.prisma.rol.create({ data: createRoleDto });
-  }
-
   async findAll() {
     return this.prisma.rol.findMany();
   }

@@ -9,11 +9,6 @@ import { Roles } from '../common/decorators/roles.decorator';
 export class RolesController {
   constructor(private readonly rolesService: RolesService) {}
 
-  @Post()
-  create(@Body() createRoleDto: CreateRoleDto) {
-    return this.rolesService.create(createRoleDto);
-  }
-
   @Get()
   findAll() {
     return this.rolesService.findAll();

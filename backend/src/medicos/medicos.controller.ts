@@ -15,13 +15,13 @@ export class MedicosController {
   }
 
   @Get()
-  @Roles('Admin', 'Recepción')
+  @Roles('Admin', 'Operador')
   findAll() {
     return this.medicosService.findAll();
   }
 
   @Get(':id')
-  @Roles('Admin', 'Recepción', 'Médico')
+  @Roles('Admin', 'Operador', 'Médico')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.medicosService.findOne(id);
   }

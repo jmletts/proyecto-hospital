@@ -25,7 +25,7 @@ const defaultMockDb: MockDb = {
   roles: [
     { id_rol: 1, nombre: 'Admin', descripcion: 'Administrador del sistema' },
     { id_rol: 2, nombre: 'Médico', descripcion: 'Personal médico (Oftalmólogos)' },
-    { id_rol: 3, nombre: 'Recepción', descripcion: 'Personal de recepción y caja' },
+    { id_rol: 3, nombre: 'Operador', descripcion: 'Personal de recepción, caja y operaciones' },
     { id_rol: 4, nombre: 'Paciente', descripcion: 'Pacientes de la clínica' },
   ],
   usuarios: [
