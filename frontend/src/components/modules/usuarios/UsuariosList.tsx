@@ -179,7 +179,7 @@ export const UsuariosList: React.FC = () => {
       >
         <form onSubmit={handleSave} className="modal-form">
           <div className="form-group">
-            <label className="form-label" htmlFor="correo">Correo Electrónico</label>
+            <label className="form-label" htmlFor="correo">Nombre de usuario / Correo</label>
             <input
               id="correo"
               type="email"
